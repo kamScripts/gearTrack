@@ -26,6 +26,27 @@
             <div id="active-loans-list" class="item-list"></div>
         </section>
     </main>
+    <dialog id="checkout-dialog">
+        <form action="" method="dialog">
+            <label>
+                Borrower Name:
+                <input type="text" name="borrower-name" id="borrowerName">
+            </label>
+            <label>
+                Borrower Email:
+                <input type="text" name="borrower-email" id="borrowerEmail">
+            </label>
+            <label>
+                Return Date:
+                <input type="date" name="return-date" id="returnDate">                
+            </label>
+            
+            <input type="submit" value="submit">
+
+            <input type="hidden" name="item-id" id="checkout-item-id">
+        </form>
+        <button commandfor="checkout-dialog" command="close">Close</button>
+    </dialog>
 
     <script type="module" src="js/app.js"></script>
 </body>

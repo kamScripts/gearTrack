@@ -57,12 +57,13 @@ async function renderEquipmentList() {
     });
     container.replaceChildren(...equipment);
 
-    container.addEventListener("click", (e)=> {
+    container.addEventListener("click", (e)=> {        
         const button = e.target.closest("button[data-item]");
 
         if(!button) return;
         
-        alert(button.dataset.item)
+        document.querySelector("#checkout-dialog").showModal();
+        document.querySelector("#checkout-item-id").value = button.dataset.item;
     });
    
 
