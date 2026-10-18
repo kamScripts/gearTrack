@@ -27,23 +27,23 @@
         </section>
     </main>
     <dialog id="checkout-dialog">
-        <form action="" method="dialog">
+        <form action="" method="dialog" id="checkout-form">
             <label>
                 Borrower Name:
-                <input type="text" name="borrower-name" id="borrowerName">
+                <input type="text" name="borrowerName" id="borrowerName">
             </label>
             <label>
                 Borrower Email:
-                <input type="text" name="borrower-email" id="borrowerEmail">
+                <input type="text" name="borrowerEmail" id="borrowerEmail">
             </label>
             <label>
                 Return Date:
-                <input type="date" name="return-date" id="returnDate">                
+                <input type="date" name="dueDate" id="dueDate">                
             </label>
             
             <input type="submit" value="submit">
 
-            <input type="hidden" name="item-id" id="checkout-item-id">
+            <input type="hidden" name="equipmentId" id="checkout-item-id">
         </form>
         <button commandfor="checkout-dialog" command="close">Close</button>
     </dialog>

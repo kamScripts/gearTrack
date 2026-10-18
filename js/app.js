@@ -16,6 +16,8 @@ window.addEventListener("DOMContentLoaded", start);
 function start() {
     renderEquipmentList();
     renderActiveLoans();
+
+    document.querySelector("#checkout-form").addEventListener("submit", submitLoan);
 }
 
 /**
@@ -56,18 +58,7 @@ async function renderEquipmentList() {
         });
     });
     container.replaceChildren(...equipment);
-
-    container.addEventListener("click", (e)=> {        
-        const button = e.target.closest("button[data-item]");
-
-        if(!button) return;
-        
-        document.querySelector("#checkout-dialog").showModal();
-        document.querySelector("#checkout-item-id").value = button.dataset.item;
-    });
-   
-
-
+    container.addEventListener("click", openCheckoutDialog);
 }
 
 /**
@@ -94,4 +85,20 @@ async function renderActiveLoans() {
     </div>
     `;
     }).join('');
+}
+
+function openCheckoutDialog(e) {
+    const button = e.target.closest("button[data-item]");
+
+    if(!button) return;
+        
+    document.querySelector("#checkout-dialog").showModal();// display checkout modal
+    document.querySelector("#checkout-item-id").value = button.dataset.item;// fill equipment-id hidden input
+
+}
+
+function submitLoan() {
+   const data = new FormData(document.querySelector("#checkout-form"));
+   console.log(data.get("return-date"));
+   document.querySelector("#checkout-item-id").value = ""; //clear equipment-id value
 }
