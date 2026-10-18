@@ -16,8 +16,13 @@ window.addEventListener("DOMContentLoaded", start);
 function start() {
     renderEquipmentList();
     renderActiveLoans();
+    renderCategories()
 
     document.querySelector("#checkout-form").addEventListener("submit", submitLoan);
+}
+function reloadUI() {
+    renderEquipmentList();
+    renderActiveLoans();
 }
 
 /**
@@ -25,12 +30,12 @@ function start() {
  * This loads all equipment items from localStorage via dataService,
  * then creates HTML cards for each item.
  */
-async function renderEquipmentList() {
+async function renderEquipmentList(category) {
     const container = document.getElementById('equipment-list');
     const items = await dataService.getEquipment();
 
     const equipment = items.map(item => {
-    
+        // Content of product-card
         const content = [
             util.renderElement({tag: "h3", text: item.name}),
             util.renderElement({tag: "span", text: item.category, classes: ["badge"]}),
@@ -41,7 +46,7 @@ async function renderEquipmentList() {
                                 ]
                             }), 
         ];
-
+        // Add checkout button
         if (item.status === "available") {
         content.push(util.renderElement({
             tag: "button",
@@ -50,15 +55,15 @@ async function renderEquipmentList() {
             attributes: {"data-item": item.id}
         }));        
         }
-
+        // return product-card
         return util.renderElement({
             tag: "li",
             classes: ["equipment-card", `status-${item.status}`],
             children: content
         });
     });
-    container.replaceChildren(...equipment);
-    container.addEventListener("click", openCheckoutDialog);
+    container.replaceChildren(...equipment);// replace container - nodes to avoid duplicates
+    container.addEventListener("click", openCheckoutDialog); // delegate event
 }
 
 /**
@@ -97,8 +102,42 @@ function openCheckoutDialog(e) {
 
 }
 
-function submitLoan() {
-   const data = new FormData(document.querySelector("#checkout-form"));
-   console.log(data.get("return-date"));
-   document.querySelector("#checkout-item-id").value = ""; //clear equipment-id value
+async function submitLoan() {
+   const data = Object.fromEntries(new FormData(document.querySelector("#checkout-form"))); // loan data
+
+   await dataService.saveLoan(data);
+
+   //update ui
+   reloadUI();
+   
 }
+
+async function renderCategories() {
+    const dropdown = document.querySelector("#category-filtering");
+
+    const equipment = await dataService.getEquipment();
+    const categories = Array.from(new Set(equipment.map(item => item.category)));
+
+    const html = categories.map(category => {
+        const element = util.renderElement({tag: "option", text: category});
+        element.value = category;
+
+        return element;
+    });
+    
+    
+    dropdown.append(...html)
+    dropdown.addEventListener("change", e => {
+        console.log(e.target.value, filterList("all"));
+    })
+    
+}
+
+function filterList(category) {
+    const list = document.querySelector("#equipment-list").children;
+
+    console.log(list);
+}
+
+
+

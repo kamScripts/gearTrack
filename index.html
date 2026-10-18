@@ -18,6 +18,13 @@
     <main class="dashboard">
         <section class="panel">
             <h2>Available Equipment</h2>
+
+            <label>
+                Category:
+                <select id="category-filtering">
+                <option value="All">All</option>
+            </select>
+            </label>
             <ul id="equipment-list" class="item-list"></ul>
         </section>
 
@@ -30,15 +37,15 @@
         <form action="" method="dialog" id="checkout-form">
             <label>
                 Borrower Name:
-                <input type="text" name="borrowerName" id="borrowerName">
+                <input type="text" name="borrowerName" id="borrowerName" required>
             </label>
             <label>
                 Borrower Email:
-                <input type="text" name="borrowerEmail" id="borrowerEmail">
+                <input type="text" name="borrowerEmail" id="borrowerEmail" required>
             </label>
             <label>
                 Return Date:
-                <input type="date" name="dueDate" id="dueDate">                
+                <input type="date" name="dueDate" id="dueDate" required>                
             </label>
             
             <input type="submit" value="submit">
