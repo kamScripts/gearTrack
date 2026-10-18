@@ -9,6 +9,8 @@ import { util } from './util.js'
 
 window.addEventListener("DOMContentLoaded", start);
 
+let activeCategory = "All" //visible equipment filtering.
+
 /**
  * Render the equipment and loans.
  */
@@ -19,6 +21,11 @@ function start() {
     renderCategories()
 
     document.querySelector("#checkout-form").addEventListener("submit", submitLoan);
+    document.querySelector("#category-filtering").addEventListener("change", (e) => {
+        activeCategory = e.target.value;
+        console.log(e.target.value)
+        renderEquipmentList();
+    })
 }
 function reloadUI() {
     renderEquipmentList();
@@ -30,11 +37,13 @@ function reloadUI() {
  * This loads all equipment items from localStorage via dataService,
  * then creates HTML cards for each item.
  */
-async function renderEquipmentList(category) {
+async function renderEquipmentList() {
+
     const container = document.getElementById('equipment-list');
     const items = await dataService.getEquipment();
+    const visible = activeCategory === "All" ? items : items.filter(item=>item.category === activeCategory); //category filter.
 
-    const equipment = items.map(item => {
+    const equipment = visible.map(item => {
         // Content of product-card
         const content = [
             util.renderElement({tag: "h3", text: item.name}),
@@ -117,26 +126,18 @@ async function renderCategories() {
 
     const equipment = await dataService.getEquipment();
     const categories = Array.from(new Set(equipment.map(item => item.category)));
+    categories.sort();
+    const html = categories.map(category => util.renderElement({tag: "option", text: category, attributes: {value: category}}));
+    html.unshift(util.renderElement({
+        tag: "option",
+        text: "All",
+        attributes: {"selected": true}
+    }));
 
-    const html = categories.map(category => {
-        const element = util.renderElement({tag: "option", text: category});
-        element.value = category;
-
-        return element;
-    });
     
     
-    dropdown.append(...html)
-    dropdown.addEventListener("change", e => {
-        console.log(e.target.value, filterList("all"));
-    })
+    dropdown.replaceChildren(...html);  
     
-}
-
-function filterList(category) {
-    const list = document.querySelector("#equipment-list").children;
-
-    console.log(list);
 }
 
 
