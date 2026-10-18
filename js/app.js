@@ -5,6 +5,7 @@
  */
 
 import { dataService } from './dataService.js';
+import { util } from './util.js'
 
 window.addEventListener("DOMContentLoaded", start);
 
@@ -26,12 +27,46 @@ async function renderEquipmentList() {
     const container = document.getElementById('equipment-list');
     const items = await dataService.getEquipment();
 
-    container.innerHTML = items.map(item => `
-    <li class="equipment-card status-${item.status}">
-        <h3>${item.name}</h3>
-        <span class="badge">${item.category}</span>
-        <p>Status: <strong>${item.status}</strong></p>
-    </li>`).join('');
+    const equipment = items.map(item => {
+    
+        const content = [
+            util.renderElement({tag: "h3", text: item.name}),
+            util.renderElement({tag: "span", text: item.category, classes: ["badge"]}),
+            util.renderElement({tag: "p",
+                                text: "Status: ",
+                                children: [
+                                    util.renderElement({tag: "span", text: item.status, classes: ["bold-text"]})                    
+                                ]
+                            }), 
+        ];
+
+        if (item.status === "available") {
+        content.push(util.renderElement({
+            tag: "button",
+            text: "Checkout",
+            classes: ["btn"],
+            attributes: {"data-item": item.id}
+        }));        
+        }
+
+        return util.renderElement({
+            tag: "li",
+            classes: ["equipment-card", `status-${item.status}`],
+            children: content
+        });
+    });
+    container.replaceChildren(...equipment);
+
+    container.addEventListener("click", (e)=> {
+        const button = e.target.closest("button[data-item]");
+
+        if(!button) return;
+        
+        alert(button.dataset.item)
+    });
+   
+
+
 }
 
 /**
