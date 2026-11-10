@@ -9,7 +9,7 @@ import { util } from './util.js'
 
 window.addEventListener("DOMContentLoaded", start);
 
-let activeCategory = "All" //visible equipment filtering.
+
 
 /**
  * Render the equipment and loans.
@@ -21,17 +21,14 @@ function start() {
     renderCategories()
 
     document.querySelector("#checkout-form").addEventListener("submit", submitLoan);
-    document.querySelector("#category-filtering").addEventListener("change", (e) => {
-        activeCategory = e.target.value;
-        console.log(e.target.value)
-        renderEquipmentList();
-    })
+    
 }
 function reloadUI() {
     renderEquipmentList();
     renderActiveLoans();
 }
 
+let activeCategory = "All" //visible equipment filtering.
 /**
  * Render the equipment list into the page.
  * This loads all equipment items from localStorage via dataService,
@@ -122,22 +119,26 @@ async function submitLoan() {
 }
 
 async function renderCategories() {
+    const form = document.querySelector("#category-form");
     const dropdown = document.querySelector("#category-filtering");
 
     const equipment = await dataService.getEquipment();
     const categories = Array.from(new Set(equipment.map(item => item.category)));
     categories.sort();
-    const html = categories.map(category => util.renderElement({tag: "option", text: category, attributes: {value: category}}));
-    html.unshift(util.renderElement({
+    const options = categories.map(category => util.renderElement({tag: "option", text: category, attributes: {value: category}}));
+    options.push(util.renderElement({
         tag: "option",
         text: "All",
         attributes: {"selected": true}
-    }));
-
+    }));   
     
-    
-    dropdown.replaceChildren(...html);  
-    
+    dropdown.replaceChildren(...options);  
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        activeCategory = dropdown.value;
+        reloadUI();
+    })    
 }
 
 

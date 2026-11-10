@@ -1,7 +1,7 @@
 
 export const util = {
 
-    renderElement: function({tag,text, classes = [], attributes = {}, children = []} ) {
+    renderElement: function({tag,text, classes = [], attributes = {}, children = []} = {} ) {
 
         const element = document.createElement(tag);
 

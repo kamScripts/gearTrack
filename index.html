@@ -19,12 +19,14 @@
         <section class="panel">
             <h2>Available Equipment</h2>
 
-            <label>
-                Category:
-                <select id="category-filtering">
-                <option value="All">All</option>
-            </select>
-            </label>
+            <form action="" id="category-form">
+                <label>
+                    Category:
+                    <select id="category-filtering" name="category"></select>
+                </label>
+                <input type="submit" value="select">
+            </form>
+
             <ul id="equipment-list" class="item-list"></ul>
         </section>
 
