@@ -25,7 +25,8 @@ function start() {
         e.preventDefault();        
         activeCategory = document.querySelector("#category-filtering").value;
         reloadUI();
-    })    
+    });
+    document.querySelector("#equipment-list").addEventListener("click", openCheckoutDialog); // delegate event
     
 }
 function reloadUI() {
@@ -74,7 +75,7 @@ async function renderEquipmentList() {
         });
     });
     container.replaceChildren(...equipment);// replace container - nodes to avoid duplicates
-    container.addEventListener("click", openCheckoutDialog); // delegate event
+    
 }
 
 /**
@@ -91,16 +92,21 @@ async function renderActiveLoans() {
         return;
     }
 
-    container.innerHTML = loans.map(loan => {
+    const loansList = loans.map(loan => {
         const item = equipment.find(e => e.id === loan.equipmentId);
-        return `
-    <div class="loan-card" data-loan-id="${loan.id}">
-        <h4>${item ? item.name : 'Unknown Equipment'}</h4>
-        <p><strong>Borrower:</strong> ${loan.borrowerName} (${loan.borrowerEmail})</p>
-        <p><strong>Due Date:</strong> ${loan.dueDate}</p>
-    </div>
-    `;
-    }).join('');
+        return util.renderElement({tag: "div", classes: ["loan-card"], attributes: {"data-loan-id": loan.id}, children: [
+            util.renderElement({tag: "h4", text: (item ? item.name : 'Unknown Equipment')}),
+            util.renderElement({tag:"p", children:
+                 [
+                    util.renderElement({tag:"span",text: "Borrower: ", classes: ["bold-text"], children: `${loan.borrowerName} (${loan.borrowerEmail})`})
+                ]}),
+            util.renderElement({tag:"p", children:
+                 [
+                    util.renderElement({tag:"span",text: "Due Date: ", classes: ["bold-text"], children: `${loan.dueDate}`})
+                ]}),
+        ]});
+    });
+    container.replaceChildren(...loansList);
 }
 
 function openCheckoutDialog(e) {
