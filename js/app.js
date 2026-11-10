@@ -20,7 +20,12 @@ function start() {
     renderActiveLoans();
     renderCategories()
 
-    document.querySelector("#checkout-form").addEventListener("submit", submitLoan);
+    document.querySelector("#checkout-form").addEventListener("submit", submitLoan);    //loan checkout form
+    document.querySelector("#category-form").addEventListener("submit", (e) => {        //select category form
+        e.preventDefault();        
+        activeCategory = document.querySelector("#category-filtering").value;
+        reloadUI();
+    })    
     
 }
 function reloadUI() {
@@ -119,26 +124,24 @@ async function submitLoan() {
 }
 
 async function renderCategories() {
-    const form = document.querySelector("#category-form");
     const dropdown = document.querySelector("#category-filtering");
 
     const equipment = await dataService.getEquipment();
     const categories = Array.from(new Set(equipment.map(item => item.category)));
-    categories.sort();
-    const options = categories.map(category => util.renderElement({tag: "option", text: category, attributes: {value: category}}));
-    options.push(util.renderElement({
+    
+    const options = [util.renderElement({
         tag: "option",
         text: "All",
-        attributes: {"selected": true}
-    }));   
+        attributes: {"selected": true, "value": "All"}
+        }),
+        ...categories.map(
+            cat => util.renderElement({tag: "option", text: cat, attributes: {value: cat}})
+        )
+    ];
+
     
     dropdown.replaceChildren(...options);  
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        
-        activeCategory = dropdown.value;
-        reloadUI();
-    })    
+
 }
 
 
