@@ -1,4 +1,4 @@
-
+//TODO: create helper to call createElement recursively on list instead renderElement(children= renderchild) 
 /**
  * Application entry point for rendering equipment and loan data.
  * @module app
@@ -18,7 +18,7 @@ window.addEventListener("DOMContentLoaded", start);
 function start() {
     renderEquipmentList();
     renderActiveLoans();
-    renderCategories()
+    renderCategories();
 
     document.querySelector("#checkout-form").addEventListener("submit", submitLoan);    //loan checkout form
     document.querySelector("#category-form").addEventListener("submit", (e) => {        //select category form
@@ -26,13 +26,27 @@ function start() {
         activeCategory = e.target.elements.category.value;
         reloadUI();
     });
+    document.querySelector("#item-name").addEventListener("input",  () => {
+        const {item, category} = Object.fromEntries(new FormData(document.querySelector("#category-form")));
+
+        filterContent({item, category});
+
+    })
     // delegate events
     document.querySelector("#equipment-list").addEventListener("click", openCheckoutDialog); 
     document.querySelector("#active-loans-list").addEventListener("click", returnLoan); 
 }
+// Reload equipment and loan lists
 function reloadUI() {
     renderEquipmentList();
     renderActiveLoans();
+}
+async function filterContent({item="", category=""} = {}) {
+    const items  = await dataService.getEquipment();
+    const re = new RegExp("^"+item+".*", "i");
+    
+    const filtered =items.filter((item => (re.test(item.name) || re.test(item.id)) && (!category || item.category == category)));
+    equipmentView(filtered, document.querySelector("#equipment-list"))
 }
 
 let activeCategory = ""; //visible equipment filtering.
@@ -45,9 +59,13 @@ async function renderEquipmentList() {
 
     const container = document.getElementById('equipment-list');
     const items = await dataService.getEquipment();
-    const visible = !activeCategory  ? items : items.filter(item=>item.category === activeCategory); //category filter.
+    const visible = !activeCategory  ? items : items.filter(item=>item.category === activeCategory);//category filter.
 
-    const equipment = visible.map(item => {
+    equipmentView(visible, container);
+    
+}
+function equipmentView(eq=[], container) {
+    const equipment = eq.map(item => {
         // Content of product-card
         const content = [
             util.renderElement({tag: "h3", text: item.name}),
@@ -76,7 +94,6 @@ async function renderEquipmentList() {
         });
     });
     container.replaceChildren(...equipment);// replace container - nodes to avoid duplicates
-    
 }
 
 /**
@@ -150,6 +167,8 @@ async function returnLoan(e) {
     console.log(res);
     reloadUI();
 }
+
+
 
 async function renderCategories() {
     const dropdown = document.querySelector("#category-filtering");
