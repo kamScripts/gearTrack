@@ -26,10 +26,14 @@ function start() {
         activeCategory = e.target.elements.category.value;
         reloadUI();
     });
+
+    let timer;
     document.querySelector("#item-name").addEventListener("input",  () => {
         const {item, category} = Object.fromEntries(new FormData(document.querySelector("#category-form")));
 
-        filterContent({item, category});
+        clearTimeout(timer);
+
+        timer = setTimeout(() => {return filterContent({item, category})}, 400);
 
     })
     // delegate events
