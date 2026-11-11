@@ -1,4 +1,5 @@
 //TODO: create helper to call createElement recursively on list instead renderElement(children= renderchild) 
+//Completed gt-101,gt-102,gt-103,gt-104,gt-106
 /**
  * Application entry point for rendering equipment and loan data.
  * @module app
@@ -50,7 +51,9 @@ async function filterContent({item="", category=""} = {}) {
     const re = new RegExp("^"+item+".*", "i");
     
     const filtered =items.filter((item => (re.test(item.name) || re.test(item.id)) && (!category || item.category == category)));
-    equipmentView(filtered, document.querySelector("#equipment-list"))
+    filtered.length > 0 ?
+     equipmentView(filtered, document.querySelector("#equipment-list")) 
+     : document.querySelector("#equipment-list").innerHTML = "<p>No equipment matching your search</p>";
 }
 
 let activeCategory = ""; //visible equipment filtering.
@@ -100,6 +103,7 @@ function equipmentView(eq=[], container) {
     container.replaceChildren(...equipment);// replace container - nodes to avoid duplicates
 }
 
+
 /**
  * Render the list of active loans into the page.
  * It also looks up the equipment name for each loan.
@@ -119,7 +123,7 @@ async function renderActiveLoans() {
         
         if (loan.status === "active") {
              const item = equipment.find(e => e.id === loan.equipmentId);
-            return util.renderElement({tag: "div", classes: ["loan-card"], children: [
+            return util.renderElement({tag: "div", classes: ["loan-card", `${util.isOverdue(loan.dueDate)?"overdue":""}`], children: [
             util.renderElement({tag: "h4", text: (item ? item.name : 'Unknown Equipment')}),
             util.renderElement({tag:"p", children:
                  [
@@ -134,7 +138,7 @@ async function renderActiveLoans() {
             util.renderElement({tag:"button", text: "Mark returned", classes: ["btn"], attributes: {"data-loan": loan.id}})
         ]});
         }
-        return "";
+        return ""; // to prevent rendering undefined 
     });
 
     container.replaceChildren(...loansList);
