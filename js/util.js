@@ -8,8 +8,13 @@ export const util = {
         if (text !== undefined) {
             element.textContent = text;
         }
-        element.classList = classes.join(" ").trim();
-        element.append(...children);
+        if (classes.length) element.classList = classes.join(" ").trim();
+        // check type of child and if string createTextNode otherwise .append throws TypeError
+        for (const child of children) {
+            const c = typeof child === "string" ? document.createTextNode(child) : this.renderElement(child);
+            element.appendChild(c)
+        }
+   
         for (const [key, value] of Object.entries(attributes)) {
             element.setAttribute(key, value);
         }
@@ -20,24 +25,5 @@ export const util = {
         const returnDate = new Date(date);
         return returnDate < today;
     },
-    renderTest: function({tag,text, classes = [], attributes = {}, children = []} = {} ) {
-
-        const element = document.createElement(tag);
-
-        if (text !== undefined) {
-            element.textContent = text;
-        }
-        element.classList = classes.join(" ").trim();
-
-        for (const child of children) {
-            const c=this.renderTest(child);
-            element.appendChild(c)
-        }
-       
-        for (const [key, value] of Object.entries(attributes)) {
-            element.setAttribute(key, value);
-        }
-        return element;
-    }
 
 }

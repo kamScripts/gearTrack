@@ -1,6 +1,5 @@
-//TODO: create helper to call createElement recursively on list instead renderElement(children= renderchild) 
-//TODO: add status summary pill to activeLoans panel
-//Completed gt-101,gt-102,gt-103,gt-104,gt-106
+
+//Completed gt-101,gt-102,gt-103,gt-104,gt105,gt-106
 /**
  * Application entry point for rendering equipment and loan data.
  * @module app
@@ -67,7 +66,7 @@ async function renderEquipmentList() {
 
     const container = document.getElementById('equipment-list');
     const items = await dataService.getEquipment();
-    const visible = !activeCategory  ? items : items.filter(item=>item.category === activeCategory);//category filter.
+    const visible = !activeCategory ? items : items.filter(item=>item.category === activeCategory);//category filter.
 
     equipmentView(visible, container);
     
@@ -80,10 +79,8 @@ function equipmentView(eq=[], container) {
             {tag: "h3", text: item.name},
             {tag: "span", text: item.category, classes: ["badge"]},
             {tag: "p",
-                                text: "Status: ",
-                                children: [
-                                   {tag: "span", text: item.status, classes: ["bold-text"]}                    
-                                ]
+             text: "Status: ",
+            children: [{tag: "span", text: item.status, classes: ["bold-text"]}]
                             }, 
         ];
         // Add checkout button
@@ -96,7 +93,7 @@ function equipmentView(eq=[], container) {
         });        
         }
         // return product-card
-        return util.renderTest({
+        return util.renderElement({
             tag: "li",
             classes: ["equipment-card", `status-${item.status}`],
             children: content
@@ -136,18 +133,22 @@ function loanView(loans, equipment, container) {
             const item = equipment.find(e => e.id === loan.equipmentId);
 
             return util.renderElement({tag: "div", classes: ["loan-card", `${checkOverdue?"overdue":""}`], children: [
-            util.renderElement({tag: "h4", text: (item ? item.name : 'Unknown Equipment')}),
-            util.renderElement({tag:"p", children:
-                 [
-                    util.renderElement({tag:"span",text: "Borrower: ", classes: ["bold-text"]}),
+            {tag: "h3", text: (item ? item.name : 'Unknown Equipment')},
+            {
+             tag:"p",
+             children: 
+                [
+                    {tag:"span",text: "Borrower: ", classes: ["bold-text"]},
                     `${loan.borrowerName} (${loan.borrowerEmail})`
-                ]}),
-            util.renderElement({tag:"p", children:
+            ]},
+            {
+             tag:"p",
+             children:
                  [
-                    util.renderElement({tag:"span",text: "Due Date: ", classes: ["bold-text"]}),
+                    {tag:"span",text: "Due Date: ", classes: ["bold-text"]},
                     `${loan.dueDate}`
-                ]}),
-            util.renderElement({tag:"button", text: "Mark returned", classes: ["btn"], attributes: {"data-loan": loan.id}})
+            ]},
+            {tag:"button", text: "Mark returned", classes: ["btn"], attributes: {"data-loan": loan.id}}
         ]});
         }
         return ""; // to prevent rendering undefined 
