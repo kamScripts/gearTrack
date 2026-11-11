@@ -77,26 +77,26 @@ function equipmentView(eq=[], container) {
     const equipment = eq.map(item => {
         // Content of product-card
         const content = [
-            util.renderElement({tag: "h3", text: item.name}),
-            util.renderElement({tag: "span", text: item.category, classes: ["badge"]}),
-            util.renderElement({tag: "p",
+            {tag: "h3", text: item.name},
+            {tag: "span", text: item.category, classes: ["badge"]},
+            {tag: "p",
                                 text: "Status: ",
                                 children: [
-                                    util.renderElement({tag: "span", text: item.status, classes: ["bold-text"]})                    
+                                   {tag: "span", text: item.status, classes: ["bold-text"]}                    
                                 ]
-                            }), 
+                            }, 
         ];
         // Add checkout button
         if (item.status === "available") {
-        content.push(util.renderElement({
+        content.push({
             tag: "button",
             text: "Checkout",
             classes: ["btn"],
             attributes: {"data-item": item.id}
-        }));        
+        });        
         }
         // return product-card
-        return util.renderElement({
+        return util.renderTest({
             tag: "li",
             classes: ["equipment-card", `status-${item.status}`],
             children: content
@@ -112,7 +112,7 @@ function equipmentView(eq=[], container) {
  */
 async function renderActiveLoans() {
     const container = document.getElementById('active-loans-list');
-
+    //Both promises need to be fulfilled to render list
     const [loans, equipment] = await Promise.all([dataService.getLoans(), dataService.getEquipment()]);
 
     if (loans.length === 0) {
