@@ -120,14 +120,18 @@ export const dataService = {
         return newLoan;
     },
     async returnLoan(loanId) {
-        const loans = await this.getLoans();
-        for (let loan of loans ) {
-            if (loan.id === loanId && loan.status === "active") {
-                
-            }
-        }
-        
-        
+        const [loans, equipment] = await Promise.all([this.getLoans(), this.getEquipment()])
+        const loan = loans.find(l => l.id === loanId && l.status === "active");
+
+        if (!loan) return null;
+
+        loan.status = "returned";
+
+        const item = equipment.find(e => e.id === loan.equipmentId);
+        if (item) item.status = "available";
+
+        localStorage.setItem(STORAGE_KEYS.LOANS, JSON.stringify(loans));
+        localStorage.setItem(STORAGE_KEYS.EQUIPMENT, JSON.stringify(equipment));
 
         return loan;
 

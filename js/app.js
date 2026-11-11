@@ -26,8 +26,9 @@ function start() {
         activeCategory = e.target.elements.category.value;
         reloadUI();
     });
-    document.querySelector("#equipment-list").addEventListener("click", openCheckoutDialog); // delegate event
-    
+    // delegate events
+    document.querySelector("#equipment-list").addEventListener("click", openCheckoutDialog); 
+    document.querySelector("#active-loans-list").addEventListener("click", returnLoan); 
 }
 function reloadUI() {
     renderEquipmentList();
@@ -94,7 +95,8 @@ async function renderActiveLoans() {
 
     const loansList = loans.map(loan => {
         const item = equipment.find(e => e.id === loan.equipmentId);
-        return util.renderElement({tag: "div", classes: ["loan-card"], attributes: {"data-loan-id": loan.id}, children: [
+        
+        return util.renderElement({tag: "div", classes: ["loan-card"], children: [
             util.renderElement({tag: "h4", text: (item ? item.name : 'Unknown Equipment')}),
             util.renderElement({tag:"p", children:
                  [
@@ -106,9 +108,11 @@ async function renderActiveLoans() {
                     util.renderElement({tag:"span",text: "Due Date: ", classes: ["bold-text"]}),
                     `${loan.dueDate}`
                 ]}),
+            util.renderElement({tag:"button", text: "Mark returned", classes: ["btn"], attributes: {"data-loan": loan.id}})
         ]});
     });
     container.replaceChildren(...loansList);
+
 }
 
 function openCheckoutDialog(e) {
@@ -129,6 +133,16 @@ async function submitLoan() {
    //update ui
    reloadUI();
    
+}
+async function returnLoan(e) {
+    const button = e.target.closest("button[data-loan]");
+
+    if (!button) return;
+    console.log(button.dataset.loan)
+    const res = await dataService.returnLoan(button.dataset.loan);
+
+    console.log(res);
+    reloadUI();
 }
 
 async function renderCategories() {
