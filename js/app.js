@@ -1,4 +1,5 @@
 //TODO: create helper to call createElement recursively on list instead renderElement(children= renderchild) 
+//TODO: add status summary pill to activeLoans panel
 //Completed gt-101,gt-102,gt-103,gt-104,gt-106
 /**
  * Application entry point for rendering equipment and loan data.
@@ -72,6 +73,7 @@ async function renderEquipmentList() {
     
 }
 function equipmentView(eq=[], container) {
+    
     const equipment = eq.map(item => {
         // Content of product-card
         const content = [
@@ -110,20 +112,30 @@ function equipmentView(eq=[], container) {
  */
 async function renderActiveLoans() {
     const container = document.getElementById('active-loans-list');
-    const loans = await dataService.getLoans();
-    const equipment = await dataService.getEquipment();
+
+    const [loans, equipment] = await Promise.all([dataService.getLoans(), dataService.getEquipment()]);
 
     if (loans.length === 0) {
         container.innerHTML = '<p>No active loans.</p>';
         return;
     }
+    loanView(loans,equipment, container);
+}
+
+function loanView(loans, equipment, container) {
+
+    let overdueLoans = 0; // overdue loans counter
 
     const loansList = loans.map(loan => {
-       
+
         
         if (loan.status === "active") {
-             const item = equipment.find(e => e.id === loan.equipmentId);
-            return util.renderElement({tag: "div", classes: ["loan-card", `${util.isOverdue(loan.dueDate)?"overdue":""}`], children: [
+
+            let checkOverdue = util.isOverdue(loan.dueDate);
+            if (checkOverdue) overdueLoans++; //increment total count
+            const item = equipment.find(e => e.id === loan.equipmentId);
+
+            return util.renderElement({tag: "div", classes: ["loan-card", `${checkOverdue?"overdue":""}`], children: [
             util.renderElement({tag: "h4", text: (item ? item.name : 'Unknown Equipment')}),
             util.renderElement({tag:"p", children:
                  [
@@ -140,10 +152,8 @@ async function renderActiveLoans() {
         }
         return ""; // to prevent rendering undefined 
     });
-
+    document.querySelector("#summary-pill").innerHTML = `<p>${overdueLoans} Overdue Loans`;
     container.replaceChildren(...loansList);
-
-
 }
 
 function openCheckoutDialog(e) {
