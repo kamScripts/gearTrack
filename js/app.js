@@ -23,7 +23,7 @@ function start() {
     document.querySelector("#checkout-form").addEventListener("submit", submitLoan);    //loan checkout form
     document.querySelector("#category-form").addEventListener("submit", (e) => {        //select category form
         e.preventDefault();        
-        activeCategory = document.querySelector("#category-filtering").value;
+        activeCategory = e.target.elements.category.value;
         reloadUI();
     });
     document.querySelector("#equipment-list").addEventListener("click", openCheckoutDialog); // delegate event
