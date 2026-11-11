@@ -94,9 +94,11 @@ async function renderActiveLoans() {
     }
 
     const loansList = loans.map(loan => {
-        const item = equipment.find(e => e.id === loan.equipmentId);
+       
         
-        return util.renderElement({tag: "div", classes: ["loan-card"], children: [
+        if (loan.status === "active") {
+             const item = equipment.find(e => e.id === loan.equipmentId);
+            return util.renderElement({tag: "div", classes: ["loan-card"], children: [
             util.renderElement({tag: "h4", text: (item ? item.name : 'Unknown Equipment')}),
             util.renderElement({tag:"p", children:
                  [
@@ -110,8 +112,12 @@ async function renderActiveLoans() {
                 ]}),
             util.renderElement({tag:"button", text: "Mark returned", classes: ["btn"], attributes: {"data-loan": loan.id}})
         ]});
+        }
+        return "";
     });
+
     container.replaceChildren(...loansList);
+
 
 }
 
