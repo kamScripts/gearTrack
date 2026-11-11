@@ -118,5 +118,18 @@ export const dataService = {
         }
 
         return newLoan;
+    },
+    async returnLoan(loanId) {
+        const loans = await this.getLoans();
+        for (let loan of loans ) {
+            if (loan.id === loanId && loan.status === "active") {
+                
+            }
+        }
+        
+        
+
+        return loan;
+
     }
 };

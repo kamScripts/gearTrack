@@ -34,7 +34,7 @@ function reloadUI() {
     renderActiveLoans();
 }
 
-let activeCategory = "All" //visible equipment filtering.
+let activeCategory = ""; //visible equipment filtering.
 /**
  * Render the equipment list into the page.
  * This loads all equipment items from localStorage via dataService,
@@ -44,7 +44,7 @@ async function renderEquipmentList() {
 
     const container = document.getElementById('equipment-list');
     const items = await dataService.getEquipment();
-    const visible = activeCategory === "All" ? items : items.filter(item=>item.category === activeCategory); //category filter.
+    const visible = !activeCategory  ? items : items.filter(item=>item.category === activeCategory); //category filter.
 
     const equipment = visible.map(item => {
         // Content of product-card
@@ -98,11 +98,13 @@ async function renderActiveLoans() {
             util.renderElement({tag: "h4", text: (item ? item.name : 'Unknown Equipment')}),
             util.renderElement({tag:"p", children:
                  [
-                    util.renderElement({tag:"span",text: "Borrower: ", classes: ["bold-text"], children: `${loan.borrowerName} (${loan.borrowerEmail})`})
+                    util.renderElement({tag:"span",text: "Borrower: ", classes: ["bold-text"]}),
+                    `${loan.borrowerName} (${loan.borrowerEmail})`
                 ]}),
             util.renderElement({tag:"p", children:
                  [
-                    util.renderElement({tag:"span",text: "Due Date: ", classes: ["bold-text"], children: `${loan.dueDate}`})
+                    util.renderElement({tag:"span",text: "Due Date: ", classes: ["bold-text"]}),
+                    `${loan.dueDate}`
                 ]}),
         ]});
     });
@@ -133,12 +135,12 @@ async function renderCategories() {
     const dropdown = document.querySelector("#category-filtering");
 
     const equipment = await dataService.getEquipment();
-    const categories = Array.from(new Set(equipment.map(item => item.category)));
+    const categories = Array.from(new Set(equipment.map(item => item.category)));// Extract categories
     
     const options = [util.renderElement({
         tag: "option",
         text: "All",
-        attributes: {"selected": true, "value": "All"}
+        attributes: {"selected": true, "value": ""}
         }),
         ...categories.map(
             cat => util.renderElement({tag: "option", text: cat, attributes: {value: cat}})
