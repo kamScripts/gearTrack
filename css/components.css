@@ -1,4 +1,30 @@
 /* css/components.css - Component level styles */
+:root {
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --bg-color: #f4f6f8;
+    --card-bg: #ffffff;
+    --text-main: #2d3748;
+    --text-muted: #718096;
+    --border-color: #e2e8f0;
+
+    --primary: #3182ce;
+    --primary-hover: #2b6cb0;
+    --success-bg: #c6f6d5;
+    --success-text: #22543d;
+    --warning-bg: #feebc8;
+    --warning-text: #744210;
+    --danger-bg: #fed7d7;
+    --danger-text: #742a2a;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --radius: 8px;
+    --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
 /* Item Lists */
 .item-list {
@@ -10,6 +36,7 @@
 
 /* Equipment Cards */
 .equipment-card {
+    min-height: 144px; /* prevent jumping content after loan submit and button disappears */
     padding: 14px 18px;
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
@@ -114,3 +141,130 @@
 .bold-text {
     font-weight: bold;
 }
+
+/* FORMS */
+form {
+    display: flex;
+    gap: var(--space-xs);   
+    
+}
+.cat-form {
+    width: 100;
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-xs);
+}
+.cat-form>.form-group {
+    display:flex;
+    align-items: center;
+    justify-content: space-around;    
+}
+.form-controls {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 2px;
+}
+
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding:  8px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+}
+
+
+.modal {
+    width: min(500px, calc(100%-2rem));
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius:var(--radius);
+    background: var(--bg-color);
+    box-shadow: var(--shadow-md);
+}
+.modal[open] {
+    animation: modalIn 0.3s ease;
+}
+
+.modal::backdrop {
+    background: var(--modal-backdrop);
+    backdrop-filter: blur(1px);
+}
+.modal[open]::backdrop {
+    animation: fadeIn 0.3 ease;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(80px);}
+    to { opacity: 1; transform: none;}
+}
+
+.modal-content,
+.checkout-form {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    max-height: calc(100dvh - 2rem);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    
+    border-bottom: 1px solid var(--border-color);
+
+}
+.modal-title {
+    padding: var(--space-md);
+}
+.modal-close {
+    background-color: rgb(238, 235, 235);
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border: 1px solid var(--border-color);
+
+    border-radius:var(--radius);
+    font-size: 1.5rem;
+    transition: color var(--transition), border-color var(--transition), background-color var(--transition);
+    align-self: flex-start;
+    
+}
+.modal-close:hover {
+    color: var(--card-bg);
+    border-color: #181818;
+    background-color: rgb(64, 64, 64);    
+}
+.checkout-form {
+    padding: var(--space-md);
+}
+.modal-controls {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+    padding: var(--space-md) 0;
+}
+.btn-outline {
+    background-color: rgb(226, 3, 3);
+    transition: background-color var(--transition);
+}
+.btn-outline:hover {
+    background-color: rgb(158, 3, 3)
+}
+

@@ -19,18 +19,22 @@
         <section class="panel">
             <h2>Available Equipment</h2>
 
-            <form id="category-form">
-                <label>
-                    item:
-                    <input type="search" id="item-name" name="item" placeholder="name or id...">
-                </label>
+            <form id="categoryForm" class="cat-form">
+                <div class="form-group">
+                    <label>
+                        item:
+                        <input type="search" id="item-name" name="item" placeholder="name or id...">
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                            Category:
+                            <select id="category-filtering" name="category"></select>
+                    </label>
+                </div>               
                 
-                <label>
-                    Category:
-                    <select id="category-filtering" name="category"></select>
-                </label>
 
-                <input type="submit" value="select" >
+                <div class="form-controls"><button type="submit" class="btn">Search</button></div>
             </form>
 
             <ul id="equipment-list" class="item-list"></ul>
@@ -42,26 +46,42 @@
             <div id="active-loans-list" class="item-list"></div>
         </section>
     </main>
-    <dialog id="checkout-dialog">
-        <form method="dialog" id="checkout-form">
-            <label>
-                Borrower Name:
-                <input type="text" name="borrowerName" id="borrowerName" required>
-            </label>
-            <label>
-                Borrower Email:
-                <input type="text" name="borrowerEmail" id="borrowerEmail" required>
-            </label>
-            <label>
-                Return Date:
-                <input type="date" name="dueDate" id="dueDate" required>                
-            </label>
-            
-            <input type="submit" value="submit">
+    <dialog id="checkout-dialog" class="modal" aria-labelledby="">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="contactModalTitle">Loan Equipment form</h2>
+                <button commandfor="checkout-dialog" command="close" type="button" class="modal-close" data-modal-close>
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form method="dialog" id="checkoutForm" class="checkout-form">
+                <input type="hidden" name="equipmentId" id="checkout-item-id">
+                <div class="form-group">
+                    <label for="borrowerName">
+                        Borrower Name:
+                        <input type="text" name="borrowerName" id="borrowerName" required>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        Borrower Email:
+                        <input type="text" name="borrowerEmail" id="borrowerEmail" required>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        Return Date:
+                        <input type="date" name="dueDate" id="dueDate" required>                
+                    </label>
+                </div>         
 
-            <input type="hidden" name="equipmentId" id="checkout-item-id">
-        </form>
-        <button commandfor="checkout-dialog" command="close">Close</button>
+                <div class="modal-controls">
+                    <button commandfor="checkout-dialog" command="close" type="button" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+
+            </form>
+        </div>
     </dialog>
 
     <script type="module" src="js/app.js"></script>

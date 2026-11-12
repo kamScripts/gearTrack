@@ -21,16 +21,17 @@ function start() {
     renderActiveLoans();
     renderCategories();
 
-    document.querySelector("#checkout-form").addEventListener("submit", submitLoan);    //loan checkout form
-    document.querySelector("#category-form").addEventListener("submit", (e) => {        //select category form
+    document.querySelector("#checkoutForm").addEventListener("submit", submitLoan);    //loan checkout form
+    document.querySelector("#categoryForm").addEventListener("submit", (e) => {        //select category form
         e.preventDefault();        
         activeCategory = e.target.elements.category.value;
         reloadUI();
     });
 
+    //Debounce search results output
     let timer;
     document.querySelector("#item-name").addEventListener("input",  () => {
-        const {item, category} = Object.fromEntries(new FormData(document.querySelector("#category-form")));
+        const {item, category} = Object.fromEntries(new FormData(document.querySelector("#categoryForm")));
 
         clearTimeout(timer);
 
@@ -46,6 +47,7 @@ function reloadUI() {
     renderEquipmentList();
     renderActiveLoans();
 }
+// Filter items based on name/id and category
 async function filterContent({item="", category=""} = {}) {
     const items  = await dataService.getEquipment();
     const re = new RegExp("^"+item+".*", "i");
@@ -156,7 +158,7 @@ function loanView(loans, equipment, container) {
     document.querySelector("#summary-pill").innerHTML = `<p>${overdueLoans} Overdue Loans`;
     container.replaceChildren(...loansList);
 }
-
+// Modal
 function openCheckoutDialog(e) {
     const button = e.target.closest("button[data-item]");
 
@@ -164,11 +166,12 @@ function openCheckoutDialog(e) {
         
     document.querySelector("#checkout-dialog").showModal();// display checkout modal
     document.querySelector("#checkout-item-id").value = button.dataset.item;// fill equipment-id hidden input
+    
 
 }
 
 async function submitLoan() {
-   const data = Object.fromEntries(new FormData(document.querySelector("#checkout-form"))); // loan data
+   const data = Object.fromEntries(new FormData(document.querySelector("#checkoutForm"))); // loan data
 
    await dataService.saveLoan(data);
 

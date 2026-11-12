@@ -1,14 +1,14 @@
 
 export const util = {
 
-    renderElement: function({tag,text, classes = [], attributes = {}, children = []} = {} ) {
+    renderElement: function({tag,text, classes, attributes = {}, children = []} = {} ) {
 
         const element = document.createElement(tag);
 
         if (text !== undefined) {
             element.textContent = text;
         }
-        if (classes.length) element.classList = classes.join(" ").trim();
+        if (classes) element.classList = classes.join(" ").trim();
         // check type of child and if string createTextNode otherwise .append throws TypeError
         for (const child of children) {
             const c = typeof child === "string" ? document.createTextNode(child) : this.renderElement(child);
